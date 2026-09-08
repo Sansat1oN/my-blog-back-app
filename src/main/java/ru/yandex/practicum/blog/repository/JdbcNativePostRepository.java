@@ -122,6 +122,11 @@ public class JdbcNativePostRepository implements PostRepository {
     }
 
     @Override
+    public void updateImage(Long id, byte[] image) {
+        jdbcTemplate.update("update posts set image = ? where id = ?", image, id);
+    }
+
+    @Override
     public void addLike(Long id) {
         jdbcTemplate.update("update posts set likes_count = likes_count + 1 where id = ?", id);
     }

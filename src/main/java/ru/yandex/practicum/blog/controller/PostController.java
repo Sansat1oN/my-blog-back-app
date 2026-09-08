@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import ru.yandex.practicum.blog.dto.PostDto;
 import ru.yandex.practicum.blog.dto.PostRequestDto;
 import ru.yandex.practicum.blog.dto.PostsResponseDto;
@@ -68,6 +69,12 @@ public class PostController {
     @DeleteMapping("/{id}")
     public void deletePost(@PathVariable(name = "id") Long id) {
         postService.delete(id);
+    }
+
+    @PutMapping("/{id}/image")
+    public void updateImage(@PathVariable(name = "id") Long id,
+                            @RequestParam(name = "image") MultipartFile image) {
+        postService.updateImage(id, image);
     }
 
     @GetMapping(value = "/{id}/image", produces = MediaType.IMAGE_JPEG_VALUE)

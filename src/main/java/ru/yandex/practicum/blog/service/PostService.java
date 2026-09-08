@@ -1,6 +1,7 @@
 package ru.yandex.practicum.blog.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import ru.yandex.practicum.blog.dto.PostDto;
 import ru.yandex.practicum.blog.dto.PostRequestDto;
 import ru.yandex.practicum.blog.dto.PostsResponseDto;
@@ -8,6 +9,7 @@ import ru.yandex.practicum.blog.model.Post;
 import ru.yandex.practicum.blog.repository.PostRepository;
 import ru.yandex.practicum.blog.repository.TagRepository;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,6 +111,14 @@ public class PostService {
         saveTags(id, tags);
 
         return findById(id);
+    }
+
+    public void updateImage(Long id, MultipartFile image) {
+        try {
+            postRepository.updateImage(id, image.getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
     }
 
     public int addLike(Long id) {

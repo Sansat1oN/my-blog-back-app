@@ -22,6 +22,8 @@ public interface PostRepository {
 
     void update(Long id, Post post);
 
+    void updateImage(Long id, byte[] image);
+
     void deleteById(Long id);
 
     void addLike(Long id);
