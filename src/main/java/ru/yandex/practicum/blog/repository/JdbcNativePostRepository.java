@@ -1,9 +1,12 @@
 package ru.yandex.practicum.blog.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.blog.model.Post;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 
 @Repository
@@ -47,5 +50,21 @@ public class JdbcNativePostRepository implements PostRepository {
                 "select count(*) from comments where post_id = ?",
                 Integer.class,
                 postId);
+    }
+
+    @Override
+    public Long save(Post post) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(
+                    "insert into posts(title, text) values(?, ?)",
+                    new String[]{"id"});
+            ps.setString(1, post.getTitle());
+            ps.setString(2, post.getText());
+            return ps;
+        }, keyHolder);
+
+        return keyHolder.getKey().longValue();
     }
 }

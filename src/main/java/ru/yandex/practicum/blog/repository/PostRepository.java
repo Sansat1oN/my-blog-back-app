@@ -11,4 +11,6 @@ public interface PostRepository {
     List<String> findTagsByPostId(Long postId);
 
     int countCommentsByPostId(Long postId);
+
+    Long save(Post post);
 }
