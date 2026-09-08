@@ -68,6 +68,19 @@ public class JdbcNativePostRepository implements PostRepository {
     }
 
     @Override
+    public byte[] findImageById(Long id) {
+        List<byte[]> images = jdbcTemplate.query(
+                "select image from posts where id = ?",
+                (rs, rowNum) -> rs.getBytes("image"),
+                id);
+
+        if (images.isEmpty()) {
+            return null;
+        }
+        return images.get(0);
+    }
+
+    @Override
     public List<String> findTagsByPostId(Long postId) {
         return jdbcTemplate.query(
                 "select tags.name from tags join post_tags on post_tags.tag_id = tags.id where post_tags.post_id = ?",

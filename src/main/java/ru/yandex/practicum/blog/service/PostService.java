@@ -68,6 +68,14 @@ public class PostService {
         return new PostsResponseDto(result, hasPrev, hasNext, lastPage);
     }
 
+    public byte[] findImage(Long id) {
+        byte[] image = postRepository.findImageById(id);
+        if (image == null) {
+            return new byte[0];
+        }
+        return image;
+    }
+
     public PostDto findById(Long id) {
         Post post = postRepository.findById(id);
         if (post == null) {

@@ -1,5 +1,6 @@
 package ru.yandex.practicum.blog.controller;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,5 +51,10 @@ public class PostController {
     @PostMapping
     public PostDto createPost(@RequestBody PostRequestDto request) {
         return postService.create(request);
+    }
+
+    @GetMapping(value = "/{id}/image", produces = MediaType.IMAGE_JPEG_VALUE)
+    public byte[] getImage(@PathVariable(name = "id") Long id) {
+        return postService.findImage(id);
     }
 }

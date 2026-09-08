@@ -12,6 +12,8 @@ public interface PostRepository {
 
     Post findById(Long id);
 
+    byte[] findImageById(Long id);
+
     List<String> findTagsByPostId(Long postId);
 
     int countCommentsByPostId(Long postId);
