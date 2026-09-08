@@ -19,22 +19,26 @@ public class JdbcNativePostRepository implements PostRepository {
     }
 
     @Override
-    public List<Post> findAll(int pageNumber, int pageSize) {
+    public List<Post> findAll(String search, int pageNumber, int pageSize) {
         return jdbcTemplate.query(
-                "select id, title, text, likes_count from posts order by id desc limit ? offset ?",
+                "select id, title, text, likes_count from posts where lower(title) like ? order by id desc limit ? offset ?",
                 (rs, rowNum) -> new Post(
                         rs.getLong("id"),
                         rs.getString("title"),
                         rs.getString("text"),
                         rs.getInt("likes_count")
                 ),
+                "%" + search.toLowerCase() + "%",
                 pageSize,
                 (pageNumber - 1) * pageSize);
     }
 
     @Override
-    public int count() {
-        return jdbcTemplate.queryForObject("select count(*) from posts", Integer.class);
+    public int count(String search) {
+        return jdbcTemplate.queryForObject(
+                "select count(*) from posts where lower(title) like ?",
+                Integer.class,
+                "%" + search.toLowerCase() + "%");
     }
 
     @Override

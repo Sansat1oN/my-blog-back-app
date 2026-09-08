@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface PostRepository {
 
-    List<Post> findAll(int pageNumber, int pageSize);
+    List<Post> findAll(String search, int pageNumber, int pageSize);
 
-    int count();
+    int count(String search);
 
     Post findById(Long id);
 
