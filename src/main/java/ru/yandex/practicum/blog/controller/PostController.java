@@ -7,9 +7,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.blog.dto.PostDto;
 import ru.yandex.practicum.blog.dto.PostRequestDto;
+import ru.yandex.practicum.blog.dto.PostsResponseDto;
 import ru.yandex.practicum.blog.service.PostService;
 
 @CrossOrigin
@@ -21,6 +23,14 @@ public class PostController {
 
     public PostController(PostService postService) {
         this.postService = postService;
+    }
+
+    @GetMapping
+    public PostsResponseDto getPosts(
+            @RequestParam(name = "search") String search,
+            @RequestParam(name = "pageNumber") int pageNumber,
+            @RequestParam(name = "pageSize") int pageSize) {
+        return postService.findAll(search, pageNumber, pageSize);
     }
 
     @GetMapping("/{id}")

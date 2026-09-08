@@ -3,6 +3,7 @@ package ru.yandex.practicum.blog.service;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.blog.dto.PostDto;
 import ru.yandex.practicum.blog.dto.PostRequestDto;
+import ru.yandex.practicum.blog.dto.PostsResponseDto;
 import ru.yandex.practicum.blog.model.Post;
 import ru.yandex.practicum.blog.repository.PostRepository;
 import ru.yandex.practicum.blog.repository.TagRepository;
@@ -19,6 +20,17 @@ public class PostService {
     public PostService(PostRepository postRepository, TagRepository tagRepository) {
         this.postRepository = postRepository;
         this.tagRepository = tagRepository;
+    }
+
+    public PostsResponseDto findAll(String search, int pageNumber, int pageSize) {
+        List<Post> posts = postRepository.findAll();
+
+        List<PostDto> result = new ArrayList<>();
+        for (Post post : posts) {
+            result.add(toDto(post));
+        }
+
+        return new PostsResponseDto(result, false, false, 1);
     }
 
     public PostDto findById(Long id) {
