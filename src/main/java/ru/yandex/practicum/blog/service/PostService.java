@@ -23,7 +23,7 @@ public class PostService {
     }
 
     public PostsResponseDto findAll(String search, int pageNumber, int pageSize) {
-        List<Post> posts = postRepository.findAll();
+        List<Post> posts = postRepository.findAll(pageNumber, pageSize);
 
         List<PostDto> result = new ArrayList<>();
         for (Post post : posts) {
@@ -32,7 +32,20 @@ public class PostService {
             result.add(postDto);
         }
 
-        return new PostsResponseDto(result, false, false, 1);
+        int total = postRepository.count();
+
+        int lastPage = total / pageSize;
+        if (total % pageSize > 0) {
+            lastPage = lastPage + 1;
+        }
+        if (lastPage == 0) {
+            lastPage = 1;
+        }
+
+        boolean hasPrev = pageNumber > 1;
+        boolean hasNext = pageNumber < lastPage;
+
+        return new PostsResponseDto(result, hasPrev, hasNext, lastPage);
     }
 
     public PostDto findById(Long id) {
