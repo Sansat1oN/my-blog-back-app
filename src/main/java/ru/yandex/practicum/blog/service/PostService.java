@@ -97,6 +97,25 @@ public class PostService {
         return new PostDto(id, request.getTitle(), request.getText(), tags, 0, 0);
     }
 
+    public PostDto update(Long id, PostRequestDto request) {
+        Post post = new Post(id, request.getTitle(), request.getText(), 0);
+        postRepository.update(id, post);
+
+        List<String> tags = request.getTags();
+        if (tags == null) {
+            tags = new ArrayList<>();
+        }
+        tagRepository.unlinkTagsFromPost(id);
+        saveTags(id, tags);
+
+        return findById(id);
+    }
+
+    public void delete(Long id) {
+        tagRepository.unlinkTagsFromPost(id);
+        postRepository.deleteById(id);
+    }
+
     private String cutText(String text) {
         if (text.length() > 128) {
             return text.substring(0, 128) + "…";

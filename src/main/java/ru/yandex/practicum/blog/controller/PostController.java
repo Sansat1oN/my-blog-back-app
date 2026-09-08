@@ -3,9 +3,11 @@ package ru.yandex.practicum.blog.controller;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -51,6 +53,16 @@ public class PostController {
     @PostMapping
     public PostDto createPost(@RequestBody PostRequestDto request) {
         return postService.create(request);
+    }
+
+    @PutMapping("/{id}")
+    public PostDto updatePost(@PathVariable(name = "id") Long id, @RequestBody PostRequestDto request) {
+        return postService.update(id, request);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deletePost(@PathVariable(name = "id") Long id) {
+        postService.delete(id);
     }
 
     @GetMapping(value = "/{id}/image", produces = MediaType.IMAGE_JPEG_VALUE)

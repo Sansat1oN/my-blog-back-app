@@ -49,4 +49,9 @@ public class JdbcNativeTagRepository implements TagRepository {
     public void linkTagToPost(Long postId, Long tagId) {
         jdbcTemplate.update("insert into post_tags(post_id, tag_id) values(?, ?)", postId, tagId);
     }
+
+    @Override
+    public void unlinkTagsFromPost(Long postId) {
+        jdbcTemplate.update("delete from post_tags where post_id = ?", postId);
+    }
 }

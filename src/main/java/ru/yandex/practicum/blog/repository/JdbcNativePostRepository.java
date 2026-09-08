@@ -112,6 +112,21 @@ public class JdbcNativePostRepository implements PostRepository {
         return keyHolder.getKey().longValue();
     }
 
+    @Override
+    public void update(Long id, Post post) {
+        jdbcTemplate.update(
+                "update posts set title = ?, text = ? where id = ?",
+                post.getTitle(),
+                post.getText(),
+                id);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        jdbcTemplate.update("delete from comments where post_id = ?", id);
+        jdbcTemplate.update("delete from posts where id = ?", id);
+    }
+
     private String tagsCondition(List<String> tags) {
         String condition = "";
         for (int i = 0; i < tags.size(); i++) {

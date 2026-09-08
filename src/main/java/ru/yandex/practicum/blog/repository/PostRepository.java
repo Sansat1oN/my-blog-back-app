@@ -19,4 +19,8 @@ public interface PostRepository {
     int countCommentsByPostId(Long postId);
 
     Long save(Post post);
+
+    void update(Long id, Post post);
+
+    void deleteById(Long id);
 }

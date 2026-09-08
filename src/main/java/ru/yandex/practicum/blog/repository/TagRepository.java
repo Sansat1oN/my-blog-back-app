@@ -7,4 +7,6 @@ public interface TagRepository {
     Long save(String name);
 
     void linkTagToPost(Long postId, Long tagId);
+
+    void unlinkTagsFromPost(Long postId);
 }
