@@ -55,6 +55,11 @@ public class PostController {
         return postService.create(request);
     }
 
+    @PostMapping("/{id}/likes")
+    public int addLike(@PathVariable(name = "id") Long id) {
+        return postService.addLike(id);
+    }
+
     @PutMapping("/{id}")
     public PostDto updatePost(@PathVariable(name = "id") Long id, @RequestBody PostRequestDto request) {
         return postService.update(id, request);

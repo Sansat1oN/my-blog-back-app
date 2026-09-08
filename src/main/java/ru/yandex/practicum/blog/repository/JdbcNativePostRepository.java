@@ -122,6 +122,11 @@ public class JdbcNativePostRepository implements PostRepository {
     }
 
     @Override
+    public void addLike(Long id) {
+        jdbcTemplate.update("update posts set likes_count = likes_count + 1 where id = ?", id);
+    }
+
+    @Override
     public void deleteById(Long id) {
         jdbcTemplate.update("delete from comments where post_id = ?", id);
         jdbcTemplate.update("delete from posts where id = ?", id);

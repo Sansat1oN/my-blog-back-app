@@ -111,6 +111,13 @@ public class PostService {
         return findById(id);
     }
 
+    public int addLike(Long id) {
+        postRepository.addLike(id);
+
+        Post post = postRepository.findById(id);
+        return post.getLikesCount();
+    }
+
     public void delete(Long id) {
         tagRepository.unlinkTagsFromPost(id);
         postRepository.deleteById(id);
