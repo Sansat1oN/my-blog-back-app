@@ -6,6 +6,7 @@ import ru.yandex.practicum.blog.dto.PostDto;
 import ru.yandex.practicum.blog.dto.PostRequestDto;
 import ru.yandex.practicum.blog.dto.PostsResponseDto;
 import ru.yandex.practicum.blog.model.Post;
+import ru.yandex.practicum.blog.repository.CommentRepository;
 import ru.yandex.practicum.blog.repository.PostRepository;
 import ru.yandex.practicum.blog.repository.TagRepository;
 
@@ -18,10 +19,14 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final TagRepository tagRepository;
+    private final CommentRepository commentRepository;
 
-    public PostService(PostRepository postRepository, TagRepository tagRepository) {
+    public PostService(PostRepository postRepository,
+                       TagRepository tagRepository,
+                       CommentRepository commentRepository) {
         this.postRepository = postRepository;
         this.tagRepository = tagRepository;
+        this.commentRepository = commentRepository;
     }
 
     public PostsResponseDto findAll(String search, int pageNumber, int pageSize) {
@@ -130,6 +135,7 @@ public class PostService {
 
     public void delete(Long id) {
         tagRepository.unlinkTagsFromPost(id);
+        commentRepository.deleteByPostId(id);
         postRepository.deleteById(id);
     }
 
