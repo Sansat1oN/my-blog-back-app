@@ -27,7 +27,9 @@ public class PostService {
 
         List<PostDto> result = new ArrayList<>();
         for (Post post : posts) {
-            result.add(toDto(post));
+            PostDto postDto = toDto(post);
+            postDto.setText(cutText(postDto.getText()));
+            result.add(postDto);
         }
 
         return new PostsResponseDto(result, false, false, 1);
@@ -52,6 +54,13 @@ public class PostService {
         saveTags(id, tags);
 
         return new PostDto(id, request.getTitle(), request.getText(), tags, 0, 0);
+    }
+
+    private String cutText(String text) {
+        if (text.length() > 128) {
+            return text.substring(0, 128) + "…";
+        }
+        return text;
     }
 
     private void saveTags(Long postId, List<String> tags) {
