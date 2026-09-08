@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.blog.model.Post;
 
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -19,26 +20,33 @@ public class JdbcNativePostRepository implements PostRepository {
     }
 
     @Override
-    public List<Post> findAll(String search, int pageNumber, int pageSize) {
+    public List<Post> findAll(String search, List<String> tags, int pageNumber, int pageSize) {
+        String sql = "select id, title, text, likes_count from posts where lower(title) like ?"
+                + tagsCondition(tags)
+                + " order by id desc limit ? offset ?";
+
+        List<Object> params = searchParams(search, tags);
+        params.add(pageSize);
+        params.add((pageNumber - 1) * pageSize);
+
         return jdbcTemplate.query(
-                "select id, title, text, likes_count from posts where lower(title) like ? order by id desc limit ? offset ?",
+                sql,
                 (rs, rowNum) -> new Post(
                         rs.getLong("id"),
                         rs.getString("title"),
                         rs.getString("text"),
                         rs.getInt("likes_count")
                 ),
-                "%" + search.toLowerCase() + "%",
-                pageSize,
-                (pageNumber - 1) * pageSize);
+                params.toArray());
     }
 
     @Override
-    public int count(String search) {
-        return jdbcTemplate.queryForObject(
-                "select count(*) from posts where lower(title) like ?",
-                Integer.class,
-                "%" + search.toLowerCase() + "%");
+    public int count(String search, List<String> tags) {
+        String sql = "select count(*) from posts where lower(title) like ?" + tagsCondition(tags);
+
+        List<Object> params = searchParams(search, tags);
+
+        return jdbcTemplate.queryForObject(sql, Integer.class, params.toArray());
     }
 
     @Override
@@ -89,5 +97,25 @@ public class JdbcNativePostRepository implements PostRepository {
         }, keyHolder);
 
         return keyHolder.getKey().longValue();
+    }
+
+    private String tagsCondition(List<String> tags) {
+        String condition = "";
+        for (int i = 0; i < tags.size(); i++) {
+            condition = condition
+                    + " and posts.id in (select post_tags.post_id from post_tags"
+                    + " join tags on tags.id = post_tags.tag_id"
+                    + " where lower(tags.name) = ?)";
+        }
+        return condition;
+    }
+
+    private List<Object> searchParams(String search, List<String> tags) {
+        List<Object> params = new ArrayList<>();
+        params.add("%" + search.toLowerCase() + "%");
+        for (String tag : tags) {
+            params.add(tag.toLowerCase());
+        }
+        return params;
     }
 }

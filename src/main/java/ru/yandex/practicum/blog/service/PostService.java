@@ -23,12 +23,27 @@ public class PostService {
     }
 
     public PostsResponseDto findAll(String search, int pageNumber, int pageSize) {
-        String titleSearch = "";
+        String query = "";
         if (search != null) {
-            titleSearch = search.trim();
+            query = search.trim();
         }
 
-        List<Post> posts = postRepository.findAll(titleSearch, pageNumber, pageSize);
+        List<String> words = new ArrayList<>();
+        List<String> tags = new ArrayList<>();
+        for (String word : query.split(" ")) {
+            if (word.isEmpty()) {
+                continue;
+            }
+            if (word.startsWith("#")) {
+                tags.add(word.substring(1));
+            } else {
+                words.add(word);
+            }
+        }
+
+        String titleSearch = String.join(" ", words);
+
+        List<Post> posts = postRepository.findAll(titleSearch, tags, pageNumber, pageSize);
 
         List<PostDto> result = new ArrayList<>();
         for (Post post : posts) {
@@ -37,7 +52,7 @@ public class PostService {
             result.add(postDto);
         }
 
-        int total = postRepository.count(titleSearch);
+        int total = postRepository.count(titleSearch, tags);
 
         int lastPage = total / pageSize;
         if (total % pageSize > 0) {
