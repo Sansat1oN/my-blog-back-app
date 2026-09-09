@@ -12,6 +12,7 @@ import ru.yandex.practicum.blog.configuration.DataSourceConfiguration;
 import ru.yandex.practicum.blog.dto.PostDto;
 import ru.yandex.practicum.blog.dto.PostRequestDto;
 import ru.yandex.practicum.blog.dto.PostsResponseDto;
+import ru.yandex.practicum.blog.exception.NotFoundException;
 import ru.yandex.practicum.blog.model.Comment;
 import ru.yandex.practicum.blog.repository.CommentRepository;
 import ru.yandex.practicum.blog.repository.PostRepository;
@@ -22,6 +23,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringJUnitConfig(classes = {DataSourceConfiguration.class, WebConfiguration.class})
@@ -172,8 +174,18 @@ class PostServiceTest {
     }
 
     @Test
-    void findById_shouldReturnNull_whenPostNotFound() {
-        assertNull(postService.findById(999L));
+    void findById_shouldThrowNotFoundException_whenPostNotFound() {
+        assertThrows(NotFoundException.class, () -> postService.findById(999L));
+    }
+
+    @Test
+    void addLike_shouldThrowNotFoundException_whenPostNotFound() {
+        assertThrows(NotFoundException.class, () -> postService.addLike(999L));
+    }
+
+    @Test
+    void findImage_shouldThrowNotFoundException_whenPostNotFound() {
+        assertThrows(NotFoundException.class, () -> postService.findImage(999L));
     }
 
     @Test

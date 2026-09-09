@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.yandex.practicum.blog.dto.PostDto;
 import ru.yandex.practicum.blog.dto.PostRequestDto;
 import ru.yandex.practicum.blog.dto.PostsResponseDto;
+import ru.yandex.practicum.blog.exception.NotFoundException;
 import ru.yandex.practicum.blog.model.Post;
 import ru.yandex.practicum.blog.repository.CommentRepository;
 import ru.yandex.practicum.blog.repository.PostRepository;
@@ -76,6 +77,8 @@ public class PostService {
     }
 
     public byte[] findImage(Long id) {
+        checkPostExists(id);
+
         byte[] image = postRepository.findImageById(id);
         if (image == null) {
             return new byte[0];
@@ -86,7 +89,7 @@ public class PostService {
     public PostDto findById(Long id) {
         Post post = postRepository.findById(id);
         if (post == null) {
-            return null;
+            throw new NotFoundException("Пост не найден: " + id);
         }
         return toDto(post);
     }
@@ -105,6 +108,8 @@ public class PostService {
     }
 
     public PostDto update(Long id, PostRequestDto request) {
+        checkPostExists(id);
+
         Post post = new Post(id, request.getTitle(), request.getText(), 0);
         postRepository.update(id, post);
 
@@ -119,6 +124,8 @@ public class PostService {
     }
 
     public void updateImage(Long id, MultipartFile image) {
+        checkPostExists(id);
+
         try {
             postRepository.updateImage(id, image.getBytes());
         } catch (IOException e) {
@@ -127,6 +134,8 @@ public class PostService {
     }
 
     public int addLike(Long id) {
+        checkPostExists(id);
+
         postRepository.addLike(id);
 
         Post post = postRepository.findById(id);
@@ -134,9 +143,17 @@ public class PostService {
     }
 
     public void delete(Long id) {
+        checkPostExists(id);
+
         tagRepository.unlinkTagsFromPost(id);
         commentRepository.deleteByPostId(id);
         postRepository.deleteById(id);
+    }
+
+    private void checkPostExists(Long id) {
+        if (postRepository.findById(id) == null) {
+            throw new NotFoundException("Пост не найден: " + id);
+        }
     }
 
     private String cutText(String text) {

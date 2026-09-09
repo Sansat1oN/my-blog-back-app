@@ -1,7 +1,6 @@
 package ru.yandex.practicum.blog.controller;
 
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,16 +37,12 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostDto> getPost(@PathVariable(name = "id") Long id) {
-        PostDto post = postService.findById(id);
-        if (post == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(post);
+    public PostDto getPost(@PathVariable(name = "id") Long id) {
+        return postService.findById(id);
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<PostDto> getPostByPostMethod(@PathVariable(name = "id") Long id) {
+    public PostDto getPostByPostMethod(@PathVariable(name = "id") Long id) {
         return getPost(id);
     }
 

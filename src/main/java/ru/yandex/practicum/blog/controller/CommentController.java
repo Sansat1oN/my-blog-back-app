@@ -1,6 +1,5 @@
 package ru.yandex.practicum.blog.controller;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,12 +31,8 @@ public class CommentController {
     }
 
     @GetMapping("/{postId}/comments/{id}")
-    public ResponseEntity<CommentDto> getComment(@PathVariable(name = "id") Long id) {
-        CommentDto comment = commentService.findById(id);
-        if (comment == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(comment);
+    public CommentDto getComment(@PathVariable(name = "id") Long id) {
+        return commentService.findById(id);
     }
 
     @PostMapping("/{postId}/comments")

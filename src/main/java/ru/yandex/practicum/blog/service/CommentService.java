@@ -2,6 +2,7 @@ package ru.yandex.practicum.blog.service;
 
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.blog.dto.CommentDto;
+import ru.yandex.practicum.blog.exception.NotFoundException;
 import ru.yandex.practicum.blog.model.Comment;
 import ru.yandex.practicum.blog.repository.CommentRepository;
 
@@ -28,7 +29,7 @@ public class CommentService {
     public CommentDto findById(Long id) {
         Comment comment = commentRepository.findById(id);
         if (comment == null) {
-            return null;
+            throw new NotFoundException("Комментарий не найден: " + id);
         }
         return toDto(comment);
     }
@@ -41,12 +42,16 @@ public class CommentService {
     }
 
     public CommentDto update(Long id, CommentDto request) {
+        findById(id);
+
         commentRepository.update(id, request.getText());
 
         return findById(id);
     }
 
     public void delete(Long id) {
+        findById(id);
+
         commentRepository.deleteById(id);
     }
 
