@@ -227,6 +227,33 @@ class PostControllerTest {
                 .andExpect(content().bytes(new byte[0]));
     }
 
+    @Test
+    void getPosts_shouldReturnBadRequest_whenPageNumberIsZero() throws Exception {
+        mockMvc.perform(get("/api/posts")
+                        .param("search", "")
+                        .param("pageNumber", "0")
+                        .param("pageSize", "10"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void getPosts_shouldReturnBadRequest_whenPageNumberIsNegative() throws Exception {
+        mockMvc.perform(get("/api/posts")
+                        .param("search", "")
+                        .param("pageNumber", "-1")
+                        .param("pageSize", "10"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void getPosts_shouldReturnBadRequest_whenPageSizeIsZero() throws Exception {
+        mockMvc.perform(get("/api/posts")
+                        .param("search", "")
+                        .param("pageNumber", "1")
+                        .param("pageSize", "0"))
+                .andExpect(status().isBadRequest());
+    }
+
     private Long savePost(String title, String text, List<String> tags) {
         return postService.create(new PostRequestDto(null, title, text, tags)).getId();
     }

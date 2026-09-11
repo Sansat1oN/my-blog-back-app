@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.yandex.practicum.blog.dto.PostDto;
 import ru.yandex.practicum.blog.dto.PostRequestDto;
 import ru.yandex.practicum.blog.dto.PostsResponseDto;
+import ru.yandex.practicum.blog.exception.BadRequestException;
 import ru.yandex.practicum.blog.exception.NotFoundException;
 import ru.yandex.practicum.blog.model.Post;
 import ru.yandex.practicum.blog.repository.CommentRepository;
@@ -31,6 +32,13 @@ public class PostService {
     }
 
     public PostsResponseDto findAll(String search, int pageNumber, int pageSize) {
+        if (pageNumber < 1) {
+            throw new BadRequestException("Номер страницы должен быть больше нуля: " + pageNumber);
+        }
+        if (pageSize < 1) {
+            throw new BadRequestException("Размер страницы должен быть больше нуля: " + pageSize);
+        }
+
         String query = "";
         if (search != null) {
             query = search.trim();
