@@ -1,5 +1,6 @@
 package ru.yandex.practicum.blog.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -47,7 +48,7 @@ public class PostController {
     }
 
     @PostMapping
-    public PostDto createPost(@RequestBody PostRequestDto request) {
+    public PostDto createPost(@Valid @RequestBody PostRequestDto request) {
         return postService.create(request);
     }
 
@@ -57,7 +58,8 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
-    public PostDto updatePost(@PathVariable(name = "id") Long id, @RequestBody PostRequestDto request) {
+    public PostDto updatePost(@PathVariable(name = "id") Long id,
+                              @Valid @RequestBody PostRequestDto request) {
         return postService.update(id, request);
     }
 

@@ -254,6 +254,47 @@ class PostControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    void createPost_shouldReturnBadRequest_whenTitleIsBlank() throws Exception {
+        String json = "{\"title\":\"\",\"text\":\"Текст первого поста\",\"tags\":[]}";
+
+        mockMvc.perform(post("/api/posts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createPost_shouldReturnBadRequest_whenTextIsMissing() throws Exception {
+        String json = "{\"title\":\"Первый пост\",\"tags\":[]}";
+
+        mockMvc.perform(post("/api/posts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createPost_shouldReturnBadRequest_whenTagsAreMissing() throws Exception {
+        String json = "{\"title\":\"Первый пост\",\"text\":\"Текст первого поста\"}";
+
+        mockMvc.perform(post("/api/posts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void updatePost_shouldReturnBadRequest_whenTitleIsBlank() throws Exception {
+        Long id = savePost("Первый пост", "Текст первого поста", new ArrayList<>());
+        String json = "{\"title\":\"\",\"text\":\"Текст первого поста\",\"tags\":[]}";
+
+        mockMvc.perform(put("/api/posts/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest());
+    }
+
     private Long savePost(String title, String text, List<String> tags) {
         return postService.create(new PostRequestDto(null, title, text, tags)).getId();
     }

@@ -1,9 +1,14 @@
 package ru.yandex.practicum.blog.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class CommentDto {
 
     private Long id;
+
+    @NotBlank(message = "Текст обязателен")
     private String text;
+
     private Long postId;
 
     public CommentDto() {

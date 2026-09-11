@@ -1,12 +1,21 @@
 package ru.yandex.practicum.blog.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.List;
 
 public class PostRequestDto {
 
     private Long id;
+
+    @NotBlank(message = "Заголовок обязателен")
     private String title;
+
+    @NotBlank(message = "Текст обязателен")
     private String text;
+
+    @NotNull(message = "Список тегов обязателен")
     private List<String> tags;
 
     public PostRequestDto() {

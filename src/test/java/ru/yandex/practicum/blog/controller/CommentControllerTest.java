@@ -182,6 +182,29 @@ class CommentControllerTest {
         assertEquals(1, countComments("Первый комментарий"));
     }
 
+    @Test
+    void createComment_shouldReturnBadRequest_whenTextIsBlank() throws Exception {
+        Long postId = savePost("Первый пост");
+        String json = "{\"text\":\"\"}";
+
+        mockMvc.perform(post("/api/posts/{postId}/comments", postId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void updateComment_shouldReturnBadRequest_whenTextIsMissing() throws Exception {
+        Long postId = savePost("Первый пост");
+        Long id = saveComment(postId, "Первый комментарий");
+        String json = "{\"id\":" + id + ",\"postId\":" + postId + "}";
+
+        mockMvc.perform(put("/api/posts/{postId}/comments/{id}", postId, id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest());
+    }
+
     private Long savePost(String title) {
         return postService.create(new PostRequestDto(null, title, "Текст первого поста", new ArrayList<>())).getId();
     }

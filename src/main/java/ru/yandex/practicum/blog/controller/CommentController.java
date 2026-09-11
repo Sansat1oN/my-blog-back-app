@@ -1,5 +1,6 @@
 package ru.yandex.practicum.blog.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,14 +39,14 @@ public class CommentController {
 
     @PostMapping("/{postId}/comments")
     public CommentDto createComment(@PathVariable(name = "postId") Long postId,
-                                    @RequestBody CommentDto request) {
+                                    @Valid @RequestBody CommentDto request) {
         return commentService.create(postId, request);
     }
 
     @PutMapping("/{postId}/comments/{id}")
     public CommentDto updateComment(@PathVariable(name = "postId") Long postId,
                                     @PathVariable(name = "id") Long id,
-                                    @RequestBody CommentDto request) {
+                                    @Valid @RequestBody CommentDto request) {
         return commentService.update(postId, id, request);
     }
 
