@@ -31,15 +31,16 @@ public class JdbcNativeCommentRepository implements CommentRepository {
     }
 
     @Override
-    public Comment findById(Long id) {
+    public Comment findByIdAndPostId(Long id, Long postId) {
         List<Comment> comments = jdbcTemplate.query(
-                "select id, post_id, text from comments where id = ?",
+                "select id, post_id, text from comments where id = ? and post_id = ?",
                 (rs, rowNum) -> new Comment(
                         rs.getLong("id"),
                         rs.getLong("post_id"),
                         rs.getString("text")
                 ),
-                id);
+                id,
+                postId);
 
         if (comments.isEmpty()) {
             return null;
@@ -64,13 +65,13 @@ public class JdbcNativeCommentRepository implements CommentRepository {
     }
 
     @Override
-    public void update(Long id, String text) {
-        jdbcTemplate.update("update comments set text = ? where id = ?", text, id);
+    public void updateByIdAndPostId(Long id, Long postId, String text) {
+        jdbcTemplate.update("update comments set text = ? where id = ? and post_id = ?", text, id, postId);
     }
 
     @Override
-    public void deleteById(Long id) {
-        jdbcTemplate.update("delete from comments where id = ?", id);
+    public void deleteByIdAndPostId(Long id, Long postId) {
+        jdbcTemplate.update("delete from comments where id = ? and post_id = ?", id, postId);
     }
 
     @Override

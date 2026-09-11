@@ -31,8 +31,9 @@ public class CommentController {
     }
 
     @GetMapping("/{postId}/comments/{id}")
-    public CommentDto getComment(@PathVariable(name = "id") Long id) {
-        return commentService.findById(id);
+    public CommentDto getComment(@PathVariable(name = "postId") Long postId,
+                                 @PathVariable(name = "id") Long id) {
+        return commentService.findById(postId, id);
     }
 
     @PostMapping("/{postId}/comments")
@@ -42,13 +43,15 @@ public class CommentController {
     }
 
     @PutMapping("/{postId}/comments/{id}")
-    public CommentDto updateComment(@PathVariable(name = "id") Long id,
+    public CommentDto updateComment(@PathVariable(name = "postId") Long postId,
+                                    @PathVariable(name = "id") Long id,
                                     @RequestBody CommentDto request) {
-        return commentService.update(id, request);
+        return commentService.update(postId, id, request);
     }
 
     @DeleteMapping("/{postId}/comments/{id}")
-    public void deleteComment(@PathVariable(name = "id") Long id) {
-        commentService.delete(id);
+    public void deleteComment(@PathVariable(name = "postId") Long postId,
+                              @PathVariable(name = "id") Long id) {
+        commentService.delete(postId, id);
     }
 }

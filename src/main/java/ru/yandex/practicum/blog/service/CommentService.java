@@ -26,8 +26,8 @@ public class CommentService {
         return result;
     }
 
-    public CommentDto findById(Long id) {
-        Comment comment = commentRepository.findById(id);
+    public CommentDto findById(Long postId, Long id) {
+        Comment comment = commentRepository.findByIdAndPostId(id, postId);
         if (comment == null) {
             throw new NotFoundException("Комментарий не найден: " + id);
         }
@@ -41,18 +41,18 @@ public class CommentService {
         return new CommentDto(id, request.getText(), postId);
     }
 
-    public CommentDto update(Long id, CommentDto request) {
-        findById(id);
+    public CommentDto update(Long postId, Long id, CommentDto request) {
+        findById(postId, id);
 
-        commentRepository.update(id, request.getText());
+        commentRepository.updateByIdAndPostId(id, postId, request.getText());
 
-        return findById(id);
+        return findById(postId, id);
     }
 
-    public void delete(Long id) {
-        findById(id);
+    public void delete(Long postId, Long id) {
+        findById(postId, id);
 
-        commentRepository.deleteById(id);
+        commentRepository.deleteByIdAndPostId(id, postId);
     }
 
     private CommentDto toDto(Comment comment) {

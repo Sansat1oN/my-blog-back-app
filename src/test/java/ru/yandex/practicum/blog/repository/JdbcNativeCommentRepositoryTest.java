@@ -46,15 +46,26 @@ class JdbcNativeCommentRepositoryTest {
 
         Long id = commentRepository.save(new Comment(null, postId, "Первый комментарий"));
 
-        Comment saved = commentRepository.findById(id);
+        Comment saved = commentRepository.findByIdAndPostId(id, postId);
         assertNotNull(saved);
         assertEquals("Первый комментарий", saved.getText());
         assertEquals(postId, saved.getPostId());
     }
 
     @Test
-    void findById_shouldReturnNull_whenCommentNotFound() {
-        assertNull(commentRepository.findById(999L));
+    void findByIdAndPostId_shouldReturnNull_whenCommentNotFound() {
+        Long postId = savePost("Первый пост");
+
+        assertNull(commentRepository.findByIdAndPostId(999L, postId));
+    }
+
+    @Test
+    void findByIdAndPostId_shouldReturnNull_whenCommentBelongsToAnotherPost() {
+        Long firstPostId = savePost("Первый пост");
+        Long secondPostId = savePost("Второй пост");
+        Long id = commentRepository.save(new Comment(null, firstPostId, "Первый комментарий"));
+
+        assertNull(commentRepository.findByIdAndPostId(id, secondPostId));
     }
 
     @Test
@@ -80,23 +91,45 @@ class JdbcNativeCommentRepositoryTest {
     }
 
     @Test
-    void update_shouldChangeCommentText() {
+    void updateByIdAndPostId_shouldChangeCommentText() {
         Long postId = savePost("Первый пост");
         Long id = commentRepository.save(new Comment(null, postId, "Первый комментарий"));
 
-        commentRepository.update(id, "Второй комментарий");
+        commentRepository.updateByIdAndPostId(id, postId, "Второй комментарий");
 
-        assertEquals("Второй комментарий", commentRepository.findById(id).getText());
+        assertEquals("Второй комментарий", commentRepository.findByIdAndPostId(id, postId).getText());
     }
 
     @Test
-    void deleteById_shouldRemoveComment() {
+    void updateByIdAndPostId_shouldNotChangeComment_whenCommentBelongsToAnotherPost() {
+        Long firstPostId = savePost("Первый пост");
+        Long secondPostId = savePost("Второй пост");
+        Long id = commentRepository.save(new Comment(null, firstPostId, "Первый комментарий"));
+
+        commentRepository.updateByIdAndPostId(id, secondPostId, "Второй комментарий");
+
+        assertEquals("Первый комментарий", commentRepository.findByIdAndPostId(id, firstPostId).getText());
+    }
+
+    @Test
+    void deleteByIdAndPostId_shouldRemoveComment() {
         Long postId = savePost("Первый пост");
         Long id = commentRepository.save(new Comment(null, postId, "Первый комментарий"));
 
-        commentRepository.deleteById(id);
+        commentRepository.deleteByIdAndPostId(id, postId);
 
-        assertNull(commentRepository.findById(id));
+        assertNull(commentRepository.findByIdAndPostId(id, postId));
+    }
+
+    @Test
+    void deleteByIdAndPostId_shouldNotRemoveComment_whenCommentBelongsToAnotherPost() {
+        Long firstPostId = savePost("Первый пост");
+        Long secondPostId = savePost("Второй пост");
+        Long id = commentRepository.save(new Comment(null, firstPostId, "Первый комментарий"));
+
+        commentRepository.deleteByIdAndPostId(id, secondPostId);
+
+        assertNotNull(commentRepository.findByIdAndPostId(id, firstPostId));
     }
 
     @Test

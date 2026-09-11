@@ -8,13 +8,13 @@ public interface CommentRepository {
 
     List<Comment> findAllByPostId(Long postId);
 
-    Comment findById(Long id);
+    Comment findByIdAndPostId(Long id, Long postId);
 
     Long save(Comment comment);
 
-    void update(Long id, String text);
+    void updateByIdAndPostId(Long id, Long postId, String text);
 
-    void deleteById(Long id);
+    void deleteByIdAndPostId(Long id, Long postId);
 
     void deleteByPostId(Long postId);
 }

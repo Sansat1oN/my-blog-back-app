@@ -145,6 +145,43 @@ class CommentControllerTest {
         assertEquals(0, countComments("Первый комментарий"));
     }
 
+    @Test
+    void getComment_shouldReturnNotFound_whenCommentBelongsToAnotherPost() throws Exception {
+        Long firstPostId = savePost("Первый пост");
+        Long secondPostId = savePost("Второй пост");
+        Long id = saveComment(firstPostId, "Первый комментарий");
+
+        mockMvc.perform(get("/api/posts/{postId}/comments/{id}", secondPostId, id))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void updateComment_shouldReturnNotFound_whenCommentBelongsToAnotherPost() throws Exception {
+        Long firstPostId = savePost("Первый пост");
+        Long secondPostId = savePost("Второй пост");
+        Long id = saveComment(firstPostId, "Первый комментарий");
+        String json = "{\"id\":" + id + ",\"text\":\"Второй комментарий\",\"postId\":" + secondPostId + "}";
+
+        mockMvc.perform(put("/api/posts/{postId}/comments/{id}", secondPostId, id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isNotFound());
+
+        assertEquals(1, countComments("Первый комментарий"));
+    }
+
+    @Test
+    void deleteComment_shouldReturnNotFound_whenCommentBelongsToAnotherPost() throws Exception {
+        Long firstPostId = savePost("Первый пост");
+        Long secondPostId = savePost("Второй пост");
+        Long id = saveComment(firstPostId, "Первый комментарий");
+
+        mockMvc.perform(delete("/api/posts/{postId}/comments/{id}", secondPostId, id))
+                .andExpect(status().isNotFound());
+
+        assertEquals(1, countComments("Первый комментарий"));
+    }
+
     private Long savePost(String title) {
         return postService.create(new PostRequestDto(null, title, "Текст первого поста", new ArrayList<>())).getId();
     }
