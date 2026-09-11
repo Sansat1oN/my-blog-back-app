@@ -1,14 +1,8 @@
 package ru.yandex.practicum.blog.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.test.context.web.WebAppConfiguration;
-import ru.yandex.practicum.blog.WebConfiguration;
-import ru.yandex.practicum.blog.configuration.DataSourceConfiguration;
+import ru.yandex.practicum.blog.AbstractTest;
 import ru.yandex.practicum.blog.dto.PostDto;
 import ru.yandex.practicum.blog.dto.PostRequestDto;
 import ru.yandex.practicum.blog.dto.PostsResponseDto;
@@ -26,13 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringJUnitConfig(classes = {DataSourceConfiguration.class, WebConfiguration.class})
-@WebAppConfiguration
-@TestPropertySource(locations = "classpath:test-application.properties")
-class PostServiceTest {
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+class PostServiceTest extends AbstractTest {
 
     @Autowired
     private PostService postService;
@@ -42,14 +30,6 @@ class PostServiceTest {
 
     @Autowired
     private CommentRepository commentRepository;
-
-    @BeforeEach
-    void setUp() {
-        jdbcTemplate.execute("delete from post_tags");
-        jdbcTemplate.execute("delete from comments");
-        jdbcTemplate.execute("delete from posts");
-        jdbcTemplate.execute("delete from tags");
-    }
 
     @Test
     void findAll_shouldCutLongTextTo128Symbols() {
