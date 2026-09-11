@@ -7,7 +7,7 @@ create table if not exists posts(
 
 create table if not exists comments(
                                     id bigserial primary key,
-                                    post_id bigint not null references posts(id),
+                                    post_id bigint not null references posts(id) on delete cascade,
                                     text varchar not null);
 
 create table if not exists tags(
@@ -15,5 +15,6 @@ create table if not exists tags(
                                     name varchar(64) not null unique);
 
 create table if not exists post_tags(
-                                    post_id bigint not null references posts(id),
-                                    tag_id bigint not null references tags(id));
+                                    post_id bigint not null references posts(id) on delete cascade,
+                                    tag_id bigint not null references tags(id),
+                                    unique(post_id, tag_id));
