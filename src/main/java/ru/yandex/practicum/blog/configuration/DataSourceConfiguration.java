@@ -1,6 +1,5 @@
 package ru.yandex.practicum.blog.configuration;
 
-import org.h2.Driver;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,12 +22,13 @@ public class DataSourceConfiguration {
     // DataSource — компонент, отвечающий за соединение с базой данных
     @Bean
     public DataSource dataSource(
+            @Value("${spring.datasource.driver-class-name}") String driverClassName,
             @Value("${spring.datasource.url}") String url,
             @Value("${spring.datasource.username}") String username,
             @Value("${spring.datasource.password}") String password
     ) {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(Driver.class.getName());
+        dataSource.setDriverClassName(driverClassName);
         dataSource.setUrl(url);
         dataSource.setUsername(username);
         dataSource.setPassword(password);
