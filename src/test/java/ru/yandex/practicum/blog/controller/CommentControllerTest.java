@@ -205,6 +205,17 @@ class CommentControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    void createComment_shouldReturnBadRequest_whenJsonIsInvalid() throws Exception {
+        Long postId = savePost("Первый пост");
+        String json = "{\"text\":";
+
+        mockMvc.perform(post("/api/posts/{postId}/comments", postId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest());
+    }
+
     private Long savePost(String title) {
         return postService.create(new PostRequestDto(null, title, "Текст первого поста", new ArrayList<>())).getId();
     }

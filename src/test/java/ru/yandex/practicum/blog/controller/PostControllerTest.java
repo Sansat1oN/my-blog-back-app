@@ -295,6 +295,47 @@ class PostControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    void createPost_shouldReturnBadRequest_whenJsonIsInvalid() throws Exception {
+        String json = "{\"title\":\"Первый пост\",";
+
+        mockMvc.perform(post("/api/posts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void addLike_shouldReturnNotFound_whenPostNotFound() throws Exception {
+        mockMvc.perform(post("/api/posts/{id}/likes", 999L))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void updatePost_shouldReturnNotFound_whenPostNotFound() throws Exception {
+        String json = "{\"id\":999,\"title\":\"Первый пост\",\"text\":\"Текст первого поста\",\"tags\":[]}";
+
+        mockMvc.perform(put("/api/posts/{id}", 999L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deletePost_shouldReturnNotFound_whenPostNotFound() throws Exception {
+        mockMvc.perform(delete("/api/posts/{id}", 999L))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void updateImage_shouldReturnNotFound_whenPostNotFound() throws Exception {
+        MockMultipartFile image = new MockMultipartFile(
+                "image", "image.jpg", MediaType.IMAGE_JPEG_VALUE, new byte[]{1, 2, 3});
+
+        mockMvc.perform(multipart(HttpMethod.PUT, "/api/posts/{id}/image", 999L).file(image))
+                .andExpect(status().isNotFound());
+    }
+
     private Long savePost(String title, String text, List<String> tags) {
         return postService.create(new PostRequestDto(null, title, text, tags)).getId();
     }
