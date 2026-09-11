@@ -1,6 +1,7 @@
 package ru.yandex.practicum.blog.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.blog.dto.CommentDto;
 import ru.yandex.practicum.blog.exception.NotFoundException;
 import ru.yandex.practicum.blog.model.Comment;
@@ -34,6 +35,7 @@ public class CommentService {
         return toDto(comment);
     }
 
+    @Transactional
     public CommentDto create(Long postId, CommentDto request) {
         Comment comment = new Comment(null, postId, request.getText());
         Long id = commentRepository.save(comment);
@@ -41,6 +43,7 @@ public class CommentService {
         return new CommentDto(id, request.getText(), postId);
     }
 
+    @Transactional
     public CommentDto update(Long postId, Long id, CommentDto request) {
         findById(postId, id);
 
@@ -49,6 +52,7 @@ public class CommentService {
         return findById(postId, id);
     }
 
+    @Transactional
     public void delete(Long postId, Long id) {
         findById(postId, id);
 

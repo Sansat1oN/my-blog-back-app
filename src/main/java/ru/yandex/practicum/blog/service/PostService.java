@@ -1,6 +1,7 @@
 package ru.yandex.practicum.blog.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import ru.yandex.practicum.blog.dto.PostDto;
 import ru.yandex.practicum.blog.dto.PostRequestDto;
@@ -102,6 +103,7 @@ public class PostService {
         return toDto(post);
     }
 
+    @Transactional
     public PostDto create(PostRequestDto request) {
         Post post = new Post(null, request.getTitle(), request.getText(), 0);
         Long id = postRepository.save(post);
@@ -115,6 +117,7 @@ public class PostService {
         return new PostDto(id, request.getTitle(), request.getText(), tags, 0, 0);
     }
 
+    @Transactional
     public PostDto update(Long id, PostRequestDto request) {
         checkPostExists(id);
 
@@ -150,6 +153,7 @@ public class PostService {
         return post.getLikesCount();
     }
 
+    @Transactional
     public void delete(Long id) {
         checkPostExists(id);
 
