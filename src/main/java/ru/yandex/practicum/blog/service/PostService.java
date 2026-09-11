@@ -176,7 +176,14 @@ public class PostService {
     }
 
     private void saveTags(Long postId, List<String> tags) {
-        for (String name : tags) {
+        List<String> savedNames = new ArrayList<>();
+        for (String tag : tags) {
+            String name = tag.trim().toLowerCase();
+            if (savedNames.contains(name)) {
+                continue;
+            }
+            savedNames.add(name);
+
             Long tagId = tagRepository.findIdByName(name);
             if (tagId == null) {
                 tagId = tagRepository.save(name);

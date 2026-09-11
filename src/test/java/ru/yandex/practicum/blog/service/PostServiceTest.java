@@ -205,6 +205,34 @@ class PostServiceTest {
     }
 
     @Test
+    void create_shouldSaveOneTag_whenTagsDifferInCase() {
+        List<String> firstTags = new ArrayList<>();
+        firstTags.add("Java");
+        savePost("Первый пост", "Текст первого поста", firstTags);
+
+        List<String> secondTags = new ArrayList<>();
+        secondTags.add(" java ");
+        Long id = savePost("Второй пост", "Текст второго поста", secondTags);
+
+        int tagsCount = jdbcTemplate.queryForObject("select count(*) from tags", Integer.class);
+        assertEquals(1, tagsCount);
+        assertEquals("java", postService.findById(id).getTags().get(0));
+    }
+
+    @Test
+    void create_shouldLinkTagOnce_whenTagRepeatsInOnePost() {
+        List<String> tags = new ArrayList<>();
+        tags.add("Java");
+        tags.add("java");
+
+        Long id = savePost("Первый пост", "Текст первого поста", tags);
+
+        PostDto saved = postService.findById(id);
+        assertEquals(1, saved.getTags().size());
+        assertEquals("java", saved.getTags().get(0));
+    }
+
+    @Test
     void update_shouldRewriteTitleTextAndTags() {
         List<String> tags = new ArrayList<>();
         tags.add("первый тег");
