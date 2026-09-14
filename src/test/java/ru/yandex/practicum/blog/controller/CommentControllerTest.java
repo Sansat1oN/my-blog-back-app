@@ -200,6 +200,18 @@ class CommentControllerTest extends AbstractTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    void createComment_shouldReturnNotFound_whenPostNotFound() throws Exception {
+        String json = "{\"text\":\"Первый комментарий\"}";
+
+        mockMvc.perform(post("/api/posts/{postId}/comments", 999L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isNotFound());
+
+        assertEquals(0, countComments("Первый комментарий"));
+    }
+
     private Long savePost(String title) {
         return postService.create(new PostRequestDto(null, title, "Текст первого поста", new ArrayList<>())).getId();
     }

@@ -6,6 +6,7 @@ import ru.yandex.practicum.blog.dto.CommentDto;
 import ru.yandex.practicum.blog.exception.NotFoundException;
 import ru.yandex.practicum.blog.model.Comment;
 import ru.yandex.practicum.blog.repository.CommentRepository;
+import ru.yandex.practicum.blog.repository.PostRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,9 +15,11 @@ import java.util.List;
 public class CommentService {
 
     private final CommentRepository commentRepository;
+    private final PostRepository postRepository;
 
-    public CommentService(CommentRepository commentRepository) {
+    public CommentService(CommentRepository commentRepository, PostRepository postRepository) {
         this.commentRepository = commentRepository;
+        this.postRepository = postRepository;
     }
 
     public List<CommentDto> findAllByPostId(Long postId) {
@@ -37,6 +40,8 @@ public class CommentService {
 
     @Transactional
     public CommentDto create(Long postId, CommentDto request) {
+        checkPostExists(postId);
+
         Comment comment = new Comment(null, postId, request.getText());
         Long id = commentRepository.save(comment);
 
@@ -57,6 +62,12 @@ public class CommentService {
         findById(postId, id);
 
         commentRepository.deleteByIdAndPostId(id, postId);
+    }
+
+    private void checkPostExists(Long postId) {
+        if (postRepository.findById(postId) == null) {
+            throw new NotFoundException("Пост не найден: " + postId);
+        }
     }
 
     private CommentDto toDto(Comment comment) {
