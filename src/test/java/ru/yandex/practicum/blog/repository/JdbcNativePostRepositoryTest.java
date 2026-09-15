@@ -2,7 +2,7 @@ package ru.yandex.practicum.blog.repository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.yandex.practicum.blog.AbstractTest;
+import ru.yandex.practicum.blog.AbstractRepositoryTest;
 import ru.yandex.practicum.blog.model.Post;
 
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-class JdbcNativePostRepositoryTest extends AbstractTest {
+class JdbcNativePostRepositoryTest extends AbstractRepositoryTest {
 
     @Autowired
     private PostRepository postRepository;

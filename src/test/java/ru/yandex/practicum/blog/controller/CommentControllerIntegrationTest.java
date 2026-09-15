@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class CommentControllerTest extends AbstractTest {
+class CommentControllerIntegrationTest extends AbstractTest {
 
     @Autowired
     private MockMvc mockMvc;

@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class PostServiceTest extends AbstractTest {
+class PostServiceIntegrationTest extends AbstractTest {
 
     @Autowired
     private PostService postService;
