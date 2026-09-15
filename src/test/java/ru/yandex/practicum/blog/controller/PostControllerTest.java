@@ -1,14 +1,11 @@
 package ru.yandex.practicum.blog.controller;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 import ru.yandex.practicum.blog.AbstractTest;
 import ru.yandex.practicum.blog.dto.PostRequestDto;
 import ru.yandex.practicum.blog.service.PostService;
@@ -29,17 +26,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class PostControllerTest extends AbstractTest {
 
     @Autowired
-    private WebApplicationContext wac;
+    private MockMvc mockMvc;
 
     @Autowired
     private PostService postService;
-
-    private MockMvc mockMvc;
-
-    @BeforeEach
-    void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-    }
 
     @Test
     void getPosts_shouldReturnAllPosts() throws Exception {
